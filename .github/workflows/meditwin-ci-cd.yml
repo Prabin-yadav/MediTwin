@@ -18,7 +18,7 @@ permissions:
 jobs:
 
   # ============================================================
-  # JOB 1 — Validate source code
+  # JOB 1 — Validate the MediTwin application
   # ============================================================
   validate:
 
@@ -28,15 +28,19 @@ jobs:
 
     steps:
 
+      # --------------------------------------------------------
+      # Checkout source code
+      # --------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v7
 
 
       # --------------------------------------------------------
-      # Frontend validation
+      # Frontend
+      # React + Vite
       # --------------------------------------------------------
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -52,7 +56,8 @@ jobs:
 
 
       # --------------------------------------------------------
-      # Backend validation
+      # Backend
+      # Node.js + Express
       # --------------------------------------------------------
       - name: Install backend dependencies
         working-directory: backend
@@ -63,10 +68,11 @@ jobs:
 
 
       # --------------------------------------------------------
-      # Python syntax validation
+      # Python AI Modules
+      # Module 1 + Module 2 + Module 3
       # --------------------------------------------------------
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.11"
 
@@ -75,6 +81,7 @@ jobs:
           python -m compileall -q Module_1
           python -m compileall -q Module_2
           python -m compileall -q Module_3
+
 
   # ============================================================
   # JOB 2 — Build and publish Docker images
@@ -89,20 +96,23 @@ jobs:
 
     steps:
 
+      # --------------------------------------------------------
+      # Checkout source code
+      # --------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v7
 
 
       # --------------------------------------------------------
-      # Docker Buildx
+      # Setup Docker Buildx
       # --------------------------------------------------------
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
 
       # --------------------------------------------------------
-      # Docker Hub login
-      # Only needed for push events
+      # Login to Docker Hub
+      # Only authenticate for push events
       # --------------------------------------------------------
       - name: Login to Docker Hub
         if: github.event_name == 'push'
@@ -113,9 +123,9 @@ jobs:
 
 
       # ========================================================
-      # Frontend image metadata
+      # FRONTEND IMAGE METADATA
       # ========================================================
-      - name: Frontend image metadata
+      - name: Generate frontend image metadata
         id: frontend-meta
         uses: docker/metadata-action@v6
         with:
@@ -127,9 +137,9 @@ jobs:
 
 
       # ========================================================
-      # Backend image metadata
+      # BACKEND IMAGE METADATA
       # ========================================================
-      - name: Backend image metadata
+      - name: Generate backend image metadata
         id: backend-meta
         uses: docker/metadata-action@v6
         with:
@@ -141,17 +151,23 @@ jobs:
 
 
       # ========================================================
-      # Build + Push Frontend
+      # BUILD + PUSH FRONTEND
       # ========================================================
       - name: Build and push frontend image
         uses: docker/build-push-action@v7
         with:
-          context: ./frontend
+
+          # IMPORTANT:
+          # Root context allows the Dockerfile to use
+          # frontend/nginx.conf explicitly.
+          context: .
+
           file: ./frontend/Dockerfile
 
           push: ${{ github.event_name == 'push' }}
 
           tags: ${{ steps.frontend-meta.outputs.tags }}
+
           labels: ${{ steps.frontend-meta.outputs.labels }}
 
           build-args: |
@@ -162,15 +178,19 @@ jobs:
 
 
       # ========================================================
-      # Build + Push Backend
+      # BUILD + PUSH BACKEND
       # ========================================================
       - name: Build and push backend image
         uses: docker/build-push-action@v7
         with:
 
           # IMPORTANT:
-          # Backend Dockerfile needs the entire MediTwin project
-          # because it copies Module_1, Module_2 and Module_3.
+          # Backend Dockerfile needs the complete MediTwin
+          # repository because it copies:
+          #   backend
+          #   Module_1
+          #   Module_2
+          #   Module_3
           context: .
 
           file: ./backend/Dockerfile
@@ -178,6 +198,7 @@ jobs:
           push: ${{ github.event_name == 'push' }}
 
           tags: ${{ steps.backend-meta.outputs.tags }}
+
           labels: ${{ steps.backend-meta.outputs.labels }}
 
           cache-from: type=gha,scope=meditwin-backend
