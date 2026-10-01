@@ -75,10 +75,9 @@ Module_2/runs/checkpoints/last_model.pt
 # ── Module 3: runtime-generated recommendation outputs ────────────────────────
 Module_3/outputs/
 
-# ── Generic big binaries we never want pushed by accident ─────────────────────
-*.npy
-# (re-include the small, inference-critical arrays if any are added later via
-#  an explicit "!path" rule)
+# NOTE: large .npy training tensors live under the Module_* data folders above and
+# are already excluded by those directory rules. We deliberately do NOT use a global
+# "*.npy" ignore, so any small .npy artifact the app may need at runtime is tracked.
 
 # ==============================================================================
 # Editors / OS / Tooling
