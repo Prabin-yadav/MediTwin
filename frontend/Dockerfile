@@ -7,29 +7,37 @@ WORKDIR /app
 
 # Frontend build-time configuration
 ARG VITE_GOOGLE_CLIENT_ID=""
-ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+ENV VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}
 
-COPY package*.json ./
+# Copy frontend package files from the repository root context
+COPY frontend/package*.json ./
 
+# Install dependencies
 RUN if [ -f package-lock.json ]; then \
         npm ci; \
     else \
         npm install; \
     fi
 
-COPY . .
+# Copy frontend source
+COPY frontend/ ./
 
+# Build production frontend
 RUN npm run build
 
 
 # ============================================================
-# Stage 2 — Serve production build with Nginx
+# Stage 2 — Serve production build using Nginx
 # ============================================================
 FROM nginx:alpine
 
+# Copy compiled React application
 COPY --from=build /app/dist /usr/share/nginx/html
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# IMPORTANT:
+# The Docker build context is the MediTwin root,
+# therefore nginx.conf is located at frontend/nginx.conf
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
