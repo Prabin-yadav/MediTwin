@@ -17,6 +17,7 @@ require("./models/SymptomAnalysis");
 require("./models/TreatmentRecommendation");
 require("./models/Activity");
 require("./models/DoctorFeedback");
+require("./models/AiChat");
 
 // ── Database ─────────────────────────────────────────────────────────────────
 connectDB().then(() => {
@@ -42,11 +43,12 @@ app.use(metricsMiddleware);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ── Routes ────────────────────────────────────────────────────────────────────
-app.use("/api/auth",      require("./routes/authRoutes"));
-app.use("/api/health",    require("./routes/healthRoutes"));
-app.use("/api/disease",   require("./routes/diseaseRoutes"));
-app.use("/api/treatment", require("./routes/treatmentRoutes"));
-app.use("/api/dashboard", require("./routes/dashboardRoutes"));
+app.use("/api/auth",           require("./routes/authRoutes"));
+app.use("/api/health",         require("./routes/healthRoutes"));
+app.use("/api/disease",        require("./routes/diseaseRoutes"));
+app.use("/api/treatment",      require("./routes/treatmentRoutes"));
+app.use("/api/dashboard",      require("./routes/dashboardRoutes"));
+app.use("/api/assistant",      require("./routes/assistantRoutes"));
 app.use("/api/reports",        require("./routes/reportRoutes"));
 app.use("/api/doctor",         require("./routes/doctorRoutes"));
 app.use("/api/admin",          require("./routes/adminRoutes"));

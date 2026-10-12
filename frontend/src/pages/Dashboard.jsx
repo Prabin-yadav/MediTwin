@@ -385,6 +385,39 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* ── AI Health Assistant Entry Callout ────────────────────────── */}
+        <div style={{
+          marginBottom: 20, padding: '14px 18px', borderRadius: 'var(--radius)',
+          background: 'linear-gradient(135deg, rgba(5,150,105,0.07) 0%, rgba(13,148,136,0.07) 100%)',
+          border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: 10,
+              background: 'linear-gradient(135deg, var(--brand), var(--accent))',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              boxShadow: 'var(--shadow)'
+            }}>
+              <Sparkles size={18} color="white" />
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 7 }}>
+                AI Health Assistant
+                <span style={{ fontSize: 9.5, padding: '1px 6px', borderRadius: 99, background: 'var(--brand-glow)', color: 'var(--brand)', fontWeight: 700, border: '1px solid var(--border)' }}>
+                  Interactive
+                </span>
+              </div>
+              <div style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 2 }}>
+                Have questions about your lab readings, 90-day risk probability, or symptoms? Ask your personalized assistant.
+              </div>
+            </div>
+          </div>
+          <Link to="/ai-assistant" className="btn-primary" style={{ padding: '7px 14px', fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
+            <Sparkles size={13} />
+            <span>Ask AI Assistant</span>
+          </Link>
+        </div>
+
         {/* ── Row 1: The 3 Core Module Cards ──────────────────────────── */}
         <div className="dashboard-modules-grid">
 

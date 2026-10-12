@@ -5,18 +5,20 @@ import { useDiseaseJob } from '../context/DiseaseJobContext'
 import {
   Activity, LayoutDashboard, TrendingUp, Brain, Pill,
   Clock, FileText, Bell, Settings, LogOut, ChevronRight,
-  Stethoscope, Search, UserCheck, ShieldCheck, Users, Loader2, CheckCircle2, X
+  Stethoscope, Search, UserCheck, ShieldCheck, Users, Loader2, CheckCircle2, X,
+  Sparkles
 } from 'lucide-react'
 
 const PATIENT_NAV = [
   {
     label: 'Modules',
     items: [
-      { icon: LayoutDashboard, label: 'Overview',         path: '/dashboard' },
-      { icon: TrendingUp,      label: 'Future Risk',      path: '/health' },
-      { icon: Brain,           label: 'Disease Predict',  path: '/disease' },
-      { icon: Pill,            label: 'Treatment',        path: '/treatment' },
-      { icon: Search,          label: 'Find a Doctor',    path: '/find-doctor' },
+      { icon: LayoutDashboard, label: 'Overview',            path: '/dashboard' },
+      { icon: Sparkles,        label: 'AI Health Assistant', path: '/ai-assistant' },
+      { icon: TrendingUp,      label: 'Future Risk',         path: '/health' },
+      { icon: Brain,           label: 'Disease Predict',     path: '/disease' },
+      { icon: Pill,            label: 'Treatment',           path: '/treatment' },
+      { icon: Search,          label: 'Find a Doctor',       path: '/find-doctor' },
     ]
   },
   {

@@ -18,6 +18,7 @@ import AlertsPage from './pages/AlertsPage'
 import DoctorDashboard from './pages/DoctorDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import FindDoctorPage from './pages/FindDoctorPage'
+import AiAssistantPage from './pages/AiAssistantPage'
 
 function HomeRoute() {
   const { user } = useAuth()
@@ -86,6 +87,7 @@ export default function App() {
               <Route path="/profile"    element={<ProfilePage />} />
               <Route path="/reports"    element={<ReportsPage />} />
               <Route path="/alerts"     element={<AlertsPage />} />
+              <Route path="/ai-assistant" element={<AiAssistantPage />} />
               <Route path="/find-doctor" element={<FindDoctorPage />} />
               <Route path="/settings"   element={<Navigate to="/profile" replace />} />
             </Route>
