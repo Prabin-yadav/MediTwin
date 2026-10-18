@@ -745,7 +745,7 @@ export default function TreatmentPage() {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 4 }}>
                   <span style={{ fontSize: 22, fontWeight: 800, color: urg.color, fontFamily: 'Outfit' }}>
-                    {acuteRiskProb !== null ? `${acuteRiskProb}%` : 'Low Baseline'}
+                    {acuteRiskProb !== null ? `${Number(acuteRiskProb).toFixed(2)}%` : 'Low Baseline'}
                   </span>
                   <span style={{ fontSize: 11, fontWeight: 700, color: urg.color }}>
                     {riskCategory}

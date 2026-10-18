@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   Bell, AlertTriangle, AlertCircle, CheckCircle2, Shield,
   Brain, Pill, RefreshCw, Activity, Heart, Clock, Loader2,
-  ChevronRight, ArrowUpRight
+  ChevronRight, ArrowUpRight, Stethoscope
 } from 'lucide-react'
 import api from '../lib/api'
 
@@ -24,6 +24,7 @@ export default function AlertsPage() {
   const risk = data?.latestRisk
   const disease = data?.latestDisease
   const treatment = data?.latestTreatment
+  const doctorFeedbacks = data?.doctorFeedbacks || []
 
   // Generate dynamic clinical alerts based on real data
   const alerts = []
@@ -108,6 +109,22 @@ export default function AlertsPage() {
       bg: 'rgba(5,150,105,0.1)',
       link: '/treatment',
       actionLabel: 'View Treatment Protocols'
+    })
+  }
+
+  if (doctorFeedbacks.length > 0) {
+    const latestFeedback = doctorFeedbacks[0]
+    alerts.push({
+      id: `alt-doctor-feedback-${latestFeedback._id || latestFeedback.createdAt}`,
+      level: 'INFO',
+      title: 'New Doctor Feedback Available',
+      description: `${latestFeedback.doctorName || 'Your attending physician'}${latestFeedback.specialization ? ` (${latestFeedback.specialization})` : ''}: "${latestFeedback.feedback}"`,
+      module: 'Clinical Review',
+      icon: Stethoscope,
+      color: '#0284c7',
+      bg: '#e0f2fe',
+      link: '/treatment',
+      actionLabel: 'View Doctor Feedback'
     })
   }
 

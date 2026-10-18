@@ -838,14 +838,14 @@ export default function Dashboard() {
               View Clinical History →
             </Link>
           </div>
-          {data?.doctorFeedback && data.doctorFeedback.length > 0 ? (
+          {data?.doctorFeedbacks && data.doctorFeedbacks.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {data.doctorFeedback.map((fb, i) => (
-                <div key={i} style={{ padding: '12px 14px', borderRadius: 8, background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+              {data.doctorFeedbacks.map((fb, i) => (
+                <div key={fb._id || i} style={{ padding: '12px 14px', borderRadius: 8, background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)' }}>{fb.doctorName || 'Attending Physician'}</span>
-                      {fb.specialty && <span className="badge badge-low" style={{ fontSize: 9 }}>{fb.specialty}</span>}
+                      {fb.specialization && <span className="badge badge-low" style={{ fontSize: 9 }}>{fb.specialization}</span>}
                     </div>
                     <span style={{ fontSize: 10, color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
                       <Clock size={11} />
