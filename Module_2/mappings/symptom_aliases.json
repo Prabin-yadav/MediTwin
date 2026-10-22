@@ -437,7 +437,18 @@
       "tired all the time",
       "feeling drained",
       "generalized discomfort",
-      "not feeling like myself"
+      "not feeling like myself",
+      "tiredness",
+      "exhaustion",
+      "feeling tired",
+      "always tired",
+      "lack of energy",
+      "low energy",
+      "feeling weak",
+      "weakness",
+      "extreme fatigue",
+      "lethargic",
+      "lethargy"
     ]
   },
   "double_vision": {
@@ -1688,6 +1699,189 @@
     "type": "antecedent",
     "aliases": [
       "a migraine or is a member of your family known to have migraines"
+    ]
+  },
+  "headache": {
+    "evidence_code": "E_53",
+    "type": "symptom",
+    "aliases": [
+      "headache",
+      "headaches",
+      "head ache",
+      "head pain",
+      "severe headache",
+      "throbbing headache",
+      "migraine",
+      "migraines",
+      "tension headache",
+      "pain in head",
+      "head hurts",
+      "achy head"
+    ]
+  },
+  "nausea": {
+    "evidence_code": "E_148",
+    "type": "symptom",
+    "aliases": [
+      "nausea",
+      "nauseous",
+      "feeling nauseous",
+      "feel nauseous",
+      "feel sick",
+      "feeling sick",
+      "queasy",
+      "upset stomach",
+      "sick to stomach",
+      "urge to vomit",
+      "feeling like vomiting",
+      "nausea and vomiting"
+    ]
+  },
+  "vomiting": {
+    "evidence_code": "E_211",
+    "type": "symptom",
+    "aliases": [
+      "vomiting",
+      "vomit",
+      "vomited",
+      "throwing up",
+      "threw up",
+      "puking",
+      "puke",
+      "emesis",
+      "vomiting repeatedly",
+      "been vomiting"
+    ]
+  },
+  "dizziness": {
+    "evidence_code": "E_82",
+    "type": "symptom",
+    "aliases": [
+      "dizziness",
+      "dizzy",
+      "lightheaded",
+      "lightheadedness",
+      "feeling dizzy",
+      "feeling lightheaded",
+      "faint",
+      "feeling faint",
+      "spinning",
+      "vertigo",
+      "unsteady on feet"
+    ]
+  },
+  "chest_pain": {
+    "evidence_code": "E_14",
+    "type": "symptom",
+    "aliases": [
+      "chest pain",
+      "pain in chest",
+      "chest discomfort",
+      "chest tightness",
+      "tight chest",
+      "chest pressure",
+      "hurting in my chest",
+      "chest hurts",
+      "chest ache"
+    ]
+  },
+  "body_pain": {
+    "evidence_code": "E_144",
+    "type": "symptom",
+    "aliases": [
+      "body pain",
+      "body ache",
+      "body aches",
+      "full body pain",
+      "aching all over",
+      "muscle pain",
+      "muscle aches",
+      "muscle ache",
+      "generalized body aches",
+      "aching muscles",
+      "my whole body hurts",
+      "body hurts"
+    ]
+  },
+  "back_pain": {
+    "evidence_code": "E_53",
+    "type": "symptom",
+    "aliases": [
+      "back pain",
+      "lower back pain",
+      "upper back pain",
+      "back ache",
+      "backache",
+      "pain in back",
+      "aching back",
+      "back hurts",
+      "pain in lower back"
+    ]
+  },
+  "joint_pain": {
+    "evidence_code": "E_53",
+    "type": "symptom",
+    "aliases": [
+      "joint pain",
+      "joint ache",
+      "joint aches",
+      "painful joints",
+      "aching joints",
+      "stiff joints",
+      "knee pain",
+      "elbow pain",
+      "wrist pain",
+      "shoulder pain",
+      "joints hurt"
+    ]
+  },
+  "rash": {
+    "evidence_code": "E_129",
+    "type": "symptom",
+    "aliases": [
+      "rash",
+      "rashes",
+      "skin rash",
+      "itchy rash",
+      "red rash",
+      "skin eruption",
+      "skin redness",
+      "red spots",
+      "hives",
+      "spots on skin",
+      "skin lesion",
+      "skin lesions",
+      "breakout on skin"
+    ]
+  },
+  "sweating": {
+    "evidence_code": "E_50",
+    "type": "symptom",
+    "aliases": [
+      "sweating",
+      "sweats",
+      "excessive sweating",
+      "night sweats",
+      "cold sweats",
+      "sweaty",
+      "profuse sweating",
+      "sweating a lot",
+      "perspiration"
+    ]
+  },
+  "loss_of_appetite": {
+    "evidence_code": "E_161",
+    "type": "symptom",
+    "aliases": [
+      "loss of appetite",
+      "lost appetite",
+      "lost my appetite",
+      "no appetite",
+      "poor appetite",
+      "not hungry",
+      "don't feel like eating",
+      "decreased appetite",
+      "not eating"
     ]
   }
 }

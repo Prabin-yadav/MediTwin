@@ -4,38 +4,75 @@ import {
   CheckCircle2, X, Eye, EyeOff, Loader2, Sparkles, Shield
 } from 'lucide-react'
 
-// Canonical 29 biomarkers for dropdown selection
+// Comprehensive list of Supported Laboratory & Clinical Biomarkers
 const ALL_BIOMARKERS = [
-  { id: 'Systolic Blood Pressure', label: 'Systolic Blood Pressure (mmHg)', unit: 'mmHg' },
-  { id: 'Diastolic Blood Pressure', label: 'Diastolic Blood Pressure (mmHg)', unit: 'mmHg' },
-  { id: 'Heart rate', label: 'Heart Rate (bpm)', unit: 'bpm' },
-  { id: 'Respiratory rate', label: 'Respiratory Rate (breaths/min)', unit: 'breaths/min' },
-  { id: 'Body Weight', label: 'Body Weight (kg)', unit: 'kg' },
-  { id: 'Body Mass Index', label: 'Body Mass Index (BMI)', unit: 'kg/m²' },
-  { id: 'Glucose', label: 'Fasting Blood Glucose (mg/dL)', unit: 'mg/dL' },
-  { id: 'Hemoglobin A1c/Hemoglobin.total in Blood', label: 'HbA1c (%)', unit: '%' },
-  { id: 'Creatinine', label: 'Serum Creatinine (mg/dL)', unit: 'mg/dL' },
-  { id: 'Urea Nitrogen', label: 'Urea Nitrogen / BUN (mg/dL)', unit: 'mg/dL' },
-  { id: 'Glomerular filtration rate/1.73 sq M.predicted', label: 'eGFR (mL/min/1.73m²)', unit: 'mL/min/1.73m²' },
-  { id: 'Potassium', label: 'Serum Potassium (mmol/L)', unit: 'mmol/L' },
-  { id: 'Sodium', label: 'Serum Sodium (mmol/L)', unit: 'mmol/L' },
-  { id: 'Chloride', label: 'Serum Chloride (mmol/L)', unit: 'mmol/L' },
-  { id: 'Calcium', label: 'Serum Calcium (mg/dL)', unit: 'mg/dL' },
-  { id: 'Carbon Dioxide', label: 'Bicarbonate / CO2 (mmol/L)', unit: 'mmol/L' },
-  { id: 'Total Cholesterol', label: 'Total Cholesterol (mg/dL)', unit: 'mg/dL' },
-  { id: 'High Density Lipoprotein Cholesterol', label: 'HDL Cholesterol (mg/dL)', unit: 'mg/dL' },
-  { id: 'Low Density Lipoprotein Cholesterol', label: 'LDL Cholesterol (mg/dL)', unit: 'mg/dL' },
-  { id: 'Triglycerides', label: 'Triglycerides (mg/dL)', unit: 'mg/dL' },
-  { id: 'Hemoglobin [Mass/volume] in Blood', label: 'Hemoglobin (g/dL)', unit: 'g/dL' },
-  { id: 'Hematocrit [Volume Fraction] of Blood by Automated count', label: 'Hematocrit (%)', unit: '%' },
-  { id: 'Leukocytes [#/volume] in Blood by Automated count', label: 'WBC (10³/µL)', unit: '10³/µL' },
-  { id: 'Platelets [#/volume] in Blood by Automated count', label: 'Platelets (10³/µL)', unit: '10³/µL' },
-  { id: 'Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma', label: 'ALT (U/L)', unit: 'U/L' },
-  { id: 'Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma', label: 'AST (U/L)', unit: 'U/L' },
-  { id: 'Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma', label: 'Alkaline Phosphatase (U/L)', unit: 'U/L' },
-  { id: 'Bilirubin.total [Mass/volume] in Serum or Plasma', label: 'Total Bilirubin (mg/dL)', unit: 'mg/dL' },
-  { id: 'Albumin [Mass/volume] in Serum or Plasma', label: 'Albumin (g/dL)', unit: 'g/dL' },
+  // ── Core Acute Risk Engine (29 Canonical Biomarkers) ─────────────
+  { id: 'Systolic Blood Pressure', label: 'Systolic Blood Pressure', group: 'Vital Signs', unit: 'mmHg' },
+  { id: 'Diastolic Blood Pressure', label: 'Diastolic Blood Pressure', group: 'Vital Signs', unit: 'mmHg' },
+  { id: 'Heart rate', label: 'Heart Rate', group: 'Vital Signs', unit: 'bpm' },
+  { id: 'Respiratory rate', label: 'Respiratory Rate', group: 'Vital Signs', unit: 'breaths/min' },
+  { id: 'Body Weight', label: 'Body Weight', group: 'Body Measurements', unit: 'kg' },
+  { id: 'Body Mass Index', label: 'Body Mass Index (BMI)', group: 'Body Measurements', unit: 'kg/m²' },
+  { id: 'Glucose', label: 'Blood Glucose (Fasting/PPBS/Random)', group: 'Diabetes & Metabolism', unit: 'mg/dL' },
+  { id: 'Hemoglobin A1c/Hemoglobin.total in Blood', label: 'HbA1c Glycated Hemoglobin', group: 'Diabetes & Metabolism', unit: '%' },
+  { id: 'Creatinine', label: 'Serum Creatinine', group: 'Kidney Function', unit: 'mg/dL' },
+  { id: 'Urea Nitrogen', label: 'Urea Nitrogen / BUN', group: 'Kidney Function', unit: 'mg/dL' },
+  { id: 'Glomerular filtration rate/1.73 sq M.predicted', label: 'eGFR', group: 'Kidney Function', unit: 'mL/min/1.73m²' },
+  { id: 'Potassium', label: 'Serum Potassium', group: 'Electrolytes', unit: 'mmol/L' },
+  { id: 'Sodium', label: 'Serum Sodium', group: 'Electrolytes', unit: 'mmol/L' },
+  { id: 'Chloride', label: 'Serum Chloride', group: 'Electrolytes', unit: 'mmol/L' },
+  { id: 'Calcium', label: 'Serum Calcium', group: 'Electrolytes', unit: 'mg/dL' },
+  { id: 'Carbon Dioxide', label: 'Bicarbonate / CO2', group: 'Electrolytes', unit: 'mmol/L' },
+  { id: 'Total Cholesterol', label: 'Total Cholesterol', group: 'Lipid Profile', unit: 'mg/dL' },
+  { id: 'High Density Lipoprotein Cholesterol', label: 'HDL Cholesterol', group: 'Lipid Profile', unit: 'mg/dL' },
+  { id: 'Low Density Lipoprotein Cholesterol', label: 'LDL Cholesterol', group: 'Lipid Profile', unit: 'mg/dL' },
+  { id: 'Triglycerides', label: 'Triglycerides', group: 'Lipid Profile', unit: 'mg/dL' },
+  { id: 'Hemoglobin [Mass/volume] in Blood', label: 'Hemoglobin (Hb)', group: 'CBC Panel', unit: 'g/dL' },
+  { id: 'Hematocrit [Volume Fraction] of Blood by Automated count', label: 'Hematocrit / PCV', group: 'CBC Panel', unit: '%' },
+  { id: 'Leukocytes [#/volume] in Blood by Automated count', label: 'WBC / Total Leukocyte Count (TLC)', group: 'CBC Panel', unit: '10³/µL' },
+  { id: 'Platelets [#/volume] in Blood by Automated count', label: 'Platelet Count (PLT)', group: 'CBC Panel', unit: '10³/µL' },
+  { id: 'Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma', label: 'ALT / SGPT', group: 'Liver Function', unit: 'U/L' },
+  { id: 'Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma', label: 'AST / SGOT', group: 'Liver Function', unit: 'U/L' },
+  { id: 'Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma', label: 'Alkaline Phosphatase (ALP)', group: 'Liver Function', unit: 'U/L' },
+  { id: 'Bilirubin.total [Mass/volume] in Serum or Plasma', label: 'Total Bilirubin', group: 'Liver Function', unit: 'mg/dL' },
+  { id: 'Albumin [Mass/volume] in Serum or Plasma', label: 'Serum Albumin', group: 'Liver Function', unit: 'g/dL' },
+
+  // ── Extended Complete Blood Count (CBC) & Differentials ──────────
+  { id: 'Neutrophils', label: 'Neutrophils', group: 'CBC Differentials', unit: '%' },
+  { id: 'Lymphocytes', label: 'Lymphocytes', group: 'CBC Differentials', unit: '%' },
+  { id: 'Monocytes', label: 'Monocytes', group: 'CBC Differentials', unit: '%' },
+  { id: 'Eosinophils', label: 'Eosinophils', group: 'CBC Differentials', unit: '%' },
+  { id: 'Basophils', label: 'Basophils', group: 'CBC Differentials', unit: '%' },
+  { id: 'Red Blood Cell Count', label: 'RBC Count', group: 'CBC Indices', unit: '10⁶/µL' },
+  { id: 'Mean Corpuscular Volume', label: 'MCV', group: 'CBC Indices', unit: 'fL' },
+  { id: 'Mean Corpuscular Hemoglobin', label: 'MCH', group: 'CBC Indices', unit: 'pg' },
+  { id: 'Mean Corpuscular Hemoglobin Concentration', label: 'MCHC', group: 'CBC Indices', unit: 'g/dL' },
+  { id: 'Red Cell Distribution Width', label: 'RDW', group: 'CBC Indices', unit: '%' },
+  { id: 'Erythrocyte Sedimentation Rate', label: 'ESR (Westergren)', group: 'CBC Indices', unit: 'mm/hr' },
+
+  // ── Thyroid Function ─────────────────────────────────────────────
+  { id: 'Thyroid Stimulating Hormone', label: 'TSH (Ultrasensitive)', group: 'Thyroid Panel', unit: 'µIU/mL' },
+  { id: 'Triiodothyronine', label: 'Total T3', group: 'Thyroid Panel', unit: 'ng/dL' },
+  { id: 'Free Triiodothyronine', label: 'Free T3 (FT3)', group: 'Thyroid Panel', unit: 'pg/mL' },
+  { id: 'Thyroxine', label: 'Total T4', group: 'Thyroid Panel', unit: 'µg/dL' },
+  { id: 'Free Thyroxine', label: 'Free T4 (FT4)', group: 'Thyroid Panel', unit: 'ng/dL' },
+
+  // ── Vitamins & Minerals ──────────────────────────────────────────
+  { id: 'Vitamin D', label: '25-OH Vitamin D Total', group: 'Vitamins & Minerals', unit: 'ng/mL' },
+  { id: 'Vitamin B12', label: 'Vitamin B12 (Cyanocobalamin)', group: 'Vitamins & Minerals', unit: 'pg/mL' },
+  { id: 'Serum Iron', label: 'Serum Iron', group: 'Vitamins & Minerals', unit: 'µg/dL' },
+  { id: 'Ferritin', label: 'Serum Ferritin', group: 'Vitamins & Minerals', unit: 'ng/mL' },
+
+  // ── Renal & Liver Extended ───────────────────────────────────────
+  { id: 'Uric Acid', label: 'Serum Uric Acid', group: 'Metabolic & Renal', unit: 'mg/dL' },
+  { id: 'Total Protein', label: 'Total Serum Protein', group: 'Liver Function', unit: 'g/dL' },
+  { id: 'Globulin', label: 'Serum Globulin', group: 'Liver Function', unit: 'g/dL' },
+  { id: 'Albumin Globulin Ratio', label: 'A/G Ratio', group: 'Liver Function', unit: 'ratio' },
+  { id: 'Bilirubin Direct', label: 'Direct Bilirubin', group: 'Liver Function', unit: 'mg/dL' },
+  { id: 'Bilirubin Indirect', label: 'Indirect Bilirubin', group: 'Liver Function', unit: 'mg/dL' },
+  { id: 'Gamma Glutamyl Transferase', label: 'GGT / GGTP', group: 'Liver Function', unit: 'U/L' },
 ]
+
 
 export default function PdfReviewModal({ extractionData, onConfirm, onCancel, loading }) {
   const [observations, setObservations] = useState(() => (extractionData?.observations || []).map((o, idx) => ({ ...o, _key: idx })))
@@ -64,13 +101,28 @@ export default function PdfReviewModal({ extractionData, onConfirm, onCancel, lo
   const handleAddCustom = () => {
     if (!newValue || isNaN(Number(newValue))) return
     const bio = ALL_BIOMARKERS.find(b => b.id === newBiomarkerId) || ALL_BIOMARKERS[0]
+    const isCore = [
+      'Systolic Blood Pressure', 'Diastolic Blood Pressure', 'Heart rate', 'Respiratory rate',
+      'Body Weight', 'Body Mass Index', 'Glucose', 'Hemoglobin A1c/Hemoglobin.total in Blood',
+      'Creatinine', 'Urea Nitrogen', 'Glomerular filtration rate/1.73 sq M.predicted',
+      'Potassium', 'Sodium', 'Chloride', 'Calcium', 'Carbon Dioxide',
+      'Total Cholesterol', 'High Density Lipoprotein Cholesterol', 'Low Density Lipoprotein Cholesterol', 'Triglycerides',
+      'Hemoglobin [Mass/volume] in Blood', 'Hematocrit [Volume Fraction] of Blood by Automated count',
+      'Leukocytes [#/volume] in Blood by Automated count', 'Platelets [#/volume] in Blood by Automated count',
+      'Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma',
+      'Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma',
+      'Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma',
+      'Bilirubin.total [Mass/volume] in Serum or Plasma', 'Albumin [Mass/volume] in Serum or Plasma'
+    ].includes(bio.id)
+
     setObservations(prev => [
       ...prev,
       {
         _key: Date.now(),
         name: bio.id,
-        canonical_name: bio.id,
-        label: bio.label.split(' (')[0],
+        canonical_name: isCore ? bio.id : null,
+        label: bio.label,
+        is_canonical: isCore,
         value: Number(newValue),
         unit: bio.unit,
         confidence: 1.0,
@@ -88,6 +140,7 @@ export default function PdfReviewModal({ extractionData, onConfirm, onCancel, lo
         name: o.canonical_name || o.name,
         canonicalName: o.canonical_name || o.name,
         label: o.label || o.name,
+        is_canonical: Boolean(o.is_canonical),
         value: Number(o.value),
         unit: o.unit || '',
         confidence: o.confidence || 1.0,
@@ -165,12 +218,18 @@ export default function PdfReviewModal({ extractionData, onConfirm, onCancel, lo
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <span className="badge badge-low" style={{ fontSize: 11, padding: '3px 8px' }}>
               <CheckCircle2 size={12} style={{ marginRight: 4 }} />
-              {observations.length} Biomarkers Detected
+              {observations.length} Observations Detected
             </span>
-            {extractionData?.is_scanned && (
+            {extractionData?.vision_ocr_applied && (
+              <span className="badge" style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(99,102,241,0.15)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.3)' }}>
+                <Sparkles size={12} style={{ marginRight: 4 }} />
+                Multimodal Vision AI Active
+              </span>
+            )}
+            {extractionData?.is_scanned && !extractionData?.vision_ocr_applied && (
               <span className="badge badge-moderate" style={{ fontSize: 11, padding: '3px 8px' }}>
                 <Sparkles size={12} style={{ marginRight: 4 }} />
-                Scanned PDF (OCR Engine Applied)
+                Scanned PDF
               </span>
             )}
             <button
@@ -225,12 +284,29 @@ export default function PdfReviewModal({ extractionData, onConfirm, onCancel, lo
                   return (
                     <tr key={obs._key} style={{ borderBottom: '1px solid var(--border-light)' }}>
                       <td style={{ padding: '8px 10px' }}>
-                        <div style={{ fontWeight: 700, color: 'var(--text)' }}>
-                          {obs.label || obs.canonical_name || obs.name}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                          <span style={{ fontWeight: 700, color: 'var(--text)' }}>
+                            {obs.label || obs.canonical_name || obs.name}
+                          </span>
+                          {obs.is_canonical ? (
+                            <span style={{
+                              fontSize: 10, background: 'rgba(16,185,129,0.12)', color: '#10b981',
+                              padding: '1px 6px', borderRadius: 4, fontWeight: 700
+                            }}>
+                              Core ML Risk Factor
+                            </span>
+                          ) : (
+                            <span style={{
+                              fontSize: 10, background: 'rgba(56,189,248,0.12)', color: '#38bdf8',
+                              padding: '1px 6px', borderRadius: 4, fontWeight: 600
+                            }}>
+                              Clinical Lab Marker
+                            </span>
+                          )}
                         </div>
                         {obs.raw_match && (
                           <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 2 }}>
-                            Matched from: <i>"{obs.raw_match.slice(0, 55)}"</i>
+                            Matched from: <i>"{obs.raw_match.slice(0, 60)}"</i>
                           </div>
                         )}
                       </td>
@@ -312,12 +388,16 @@ export default function PdfReviewModal({ extractionData, onConfirm, onCancel, lo
               value={newBiomarkerId}
               onChange={e => setNewBiomarkerId(e.target.value)}
               style={{
-                flex: 1, minWidth: 200, padding: '6px 10px', borderRadius: 6,
+                flex: 1, minWidth: 220, padding: '6px 10px', borderRadius: 6,
                 border: '1px solid var(--border)', background: 'var(--surface)', fontSize: 12, color: 'var(--text)'
               }}
             >
-              {ALL_BIOMARKERS.map(b => (
-                <option key={b.id} value={b.id}>{b.label}</option>
+              {[...new Set(ALL_BIOMARKERS.map(b => b.group))].map(grp => (
+                <optgroup key={grp} label={`── ${grp} ──`}>
+                  {ALL_BIOMARKERS.filter(b => b.group === grp).map(b => (
+                    <option key={b.id} value={b.id}>{b.label} ({b.unit})</option>
+                  ))}
+                </optgroup>
               ))}
             </select>
             <input
@@ -349,26 +429,33 @@ export default function PdfReviewModal({ extractionData, onConfirm, onCancel, lo
           display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10,
           background: 'var(--surface-2)'
         }}>
-          <button type="button" className="btn-ghost" onClick={onCancel} disabled={loading}>
-            Discard & Cancel
-          </button>
+          <div style={{ fontSize: 12, color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Shield size={14} style={{ color: 'var(--brand)' }} />
+            Core biomarkers feed the XGBoost 90-day risk model; extended markers are saved to your longitudinal medical chart.
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button type="button" className="btn-ghost" onClick={onCancel} disabled={loading}>
+              Discard & Cancel
+            </button>
 
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={handleConfirmSubmit}
-            disabled={observations.length === 0 || loading}
-            style={{ padding: '9px 24px', fontSize: 13 }}
-          >
-            {loading ? (
-              <><Loader2 size={15} className="spin" /> Computing XGBoost Trajectory & Risk...</>
-            ) : (
-              <><Check size={15} /> Confirm & Run Risk Analysis ({observations.length} Biomarkers)</>
-            )}
-          </button>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={handleConfirmSubmit}
+              disabled={observations.length === 0 || loading}
+              style={{ padding: '9px 24px', fontSize: 13 }}
+            >
+              {loading ? (
+                <><Loader2 size={15} className="spin" /> Computing XGBoost Trajectory & Risk...</>
+              ) : (
+                <><Check size={15} /> Confirm & Save ({observations.length} Observations)</>
+              )}
+            </button>
+          </div>
         </div>
 
       </div>
     </div>
   )
 }
+

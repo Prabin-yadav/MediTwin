@@ -8,6 +8,13 @@ from typing import Any, Optional
 
 import sys
 
+# Windows UTF-8 safety
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
+
 # ============================================================
 # PATHS
 # ============================================================
@@ -166,16 +173,19 @@ class ValueExtractor:
         # ----------------------------------------------------
 
         DEFAULT_REGION_ALIASES = {
-            "upper chest": ["chest"],
-            "belly": ["abdomen", "stomach", "tummy"],
-            "lumbar spine": ["back", "lower back", "back pain"],
-            "thoracic spine": ["upper back", "mid back"],
+            "forehead": ["head", "headache", "head pain", "head ache", "migraine", "severe headache"],
+            "back of head": ["occipital pain", "back of head pain"],
+            "upper chest": ["chest", "chest pain", "chest pressure", "chest tightness", "tight chest"],
+            "belly": ["abdomen", "stomach", "tummy", "abdominal pain"],
+            "thoracic spine": ["back", "lower back", "back pain", "upper back", "mid back", "backache", "aching back"],
+            "lumbar spine": ["lower back", "lumbar"],
+            "knee": ["joint", "joint pain", "knee pain", "aching joints", "painful joints"],
             "thigh": ["leg", "upper leg"],
             "forearm": ["arm"],
             "dorsal aspect of the foot": ["foot"],
-            "dorsal aspect of the wrist": ["wrist"],
+            "dorsal aspect of the wrist": ["wrist", "wrist pain"],
             "dorsal aspect of the hand": ["hand"],
-            "side of the neck": ["neck"],
+            "side of the neck": ["neck", "neck pain"],
             "big toe": ["toe"],
             "finger (index)": ["finger"],
         }

@@ -16,6 +16,12 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+# Windows UTF-8 safety
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 # ── sys.path bootstrap ────────────────────────────────────────────────────────
 _MODULE2_DIR = Path(__file__).resolve().parent
 if str(_MODULE2_DIR) not in sys.path:
@@ -114,8 +120,10 @@ def predict_disease(req: DiseasePredictRequest):
         predictions = []
         for p in result.get("predictions", []):
             prob = float(p["probability"])
+            cond_name = p.get("condition") or p.get("pathology") or "Unknown Condition"
             predictions.append({
-                "disease": p["condition"],
+                "condition": cond_name,
+                "disease": cond_name,
                 "probability": prob,
                 "probability_percent": round(prob * 100, 2),
                 "confidence": _confidence_label(prob),

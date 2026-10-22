@@ -10,13 +10,24 @@ from typing import Optional
 import spacy
 from rapidfuzz import fuzz
 
+import sys
+import os
+
+# Windows UTF-8 safety
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 try:
-    from sentence_transformers import SentenceTransformer
+    # Only load sentence_transformers if explicitly enabled in environment
+    if os.environ.get("USE_SEMANTIC_TRANSFORMER", "0") == "1":
+        from sentence_transformers import SentenceTransformer
+    else:
+        SentenceTransformer = None
 except ImportError:
     SentenceTransformer = None
 
-
-import sys
 
 # ============================================================
 # PATHS
@@ -1421,34 +1432,16 @@ class SemanticEngine:
 
         self.model = None
 
-        if SentenceTransformer is None:
-
-            print()
-            print(
-                "⚠ sentence-transformers "
-                "not available."
-            )
-
-            print(
-                "Semantic validation disabled."
-            )
-
+        if os.environ.get("USE_SEMANTIC_TRANSFORMER", "0") != "1" or SentenceTransformer is None:
+            # Fast rapidfuzz token similarity is enabled by default for sub-second responses
             return
 
-        print()
-        print(
-            "Loading semantic model..."
-        )
-
-        self.model = (
-            SentenceTransformer(
-                "all-MiniLM-L6-v2"
-            )
-        )
-
-        print(
-            "✓ Semantic model loaded"
-        )
+        try:
+            print("Loading semantic model...")
+            self.model = SentenceTransformer("all-MiniLM-L6-v2")
+            print("[OK] Semantic model loaded")
+        except Exception:
+            self.model = None
 
     # --------------------------------------------------------
 
@@ -1458,38 +1451,20 @@ class SemanticEngine:
         alias: str,
     ) -> float:
 
+        if not text.strip() or not alias.strip():
+            return 0.0
+
         if self.model is None:
-            return 0.0
+            # High-speed rapidfuzz token sort ratio (0.0 - 1.0)
+            return max(0.0, min(1.0, fuzz.token_sort_ratio(text, alias) / 100.0))
 
-        if not text.strip():
-            return 0.0
+        try:
+            embeddings = self.model.encode([text, alias], normalize_embeddings=True)
+            score = float(embeddings[0] @ embeddings[1])
+            return max(0.0, min(1.0, score))
+        except Exception:
+            return max(0.0, min(1.0, fuzz.token_sort_ratio(text, alias) / 100.0))
 
-        if not alias.strip():
-            return 0.0
-
-        embeddings = (
-            self.model.encode(
-                [
-                    text,
-                    alias,
-                ],
-                normalize_embeddings=True,
-            )
-        )
-
-        score = float(
-            embeddings[0]
-            @
-            embeddings[1]
-        )
-
-        return max(
-            0.0,
-            min(
-                1.0,
-                score,
-            ),
-        )
 
 
 # ============================================================
@@ -1917,7 +1892,25 @@ class CandidateGenerator:
             list
         )
 
+        # Quick pre-filter: extract normalized lemmas / tokens from input text
+        text_tokens = self.scorer.aligner.processor.tokens(text)
+        text_lemmas = {t.lemma.lower() for t in text_tokens if t.lemma not in GRAMMAR_WORDS}
+        text_words = {t.text.lower() for t in text_tokens if t.text not in GRAMMAR_WORDS}
+        text_prefixes = {w[:4] for w in (text_lemmas | text_words) if len(w) >= 3}
+        norm_text = self.scorer.aligner.processor.normalize(text)
+
         for alias in aliases:
+            # Pre-filter check to skip completely unrelated aliases:
+            a_words = {w.lower() for w in (alias.lemmas + alias.raw_tokens)}
+            a_pref = {w[:4] for w in a_words if len(w) >= 3}
+            if not (
+                (a_words & text_lemmas)
+                or (a_words & text_words)
+                or (a_pref & text_prefixes)
+                or (alias.normalized and alias.normalized in norm_text)
+                or (norm_text and norm_text in alias.normalized)
+            ):
+                continue
 
             result = (
                 self.scorer.score_alias(
@@ -2597,7 +2590,7 @@ class EvidenceMatcher:
         )
 
         print(
-            "✓ spaCy tokenizer + "
+            "[OK] spaCy tokenizer + "
             "lemmatizer loaded"
         )
 
@@ -2615,7 +2608,7 @@ class EvidenceMatcher:
         )
 
         print(
-            f"✓ Loaded "
+            f"[OK] Loaded "
             f"{len(self.catalog.items)} "
             f"evidence definitions"
         )

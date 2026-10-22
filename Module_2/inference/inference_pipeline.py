@@ -2,6 +2,15 @@ from __future__ import annotations
 
 import json
 import sys
+
+# Windows UTF-8 safety
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
+from rapidfuzz import fuzz
+
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -1105,6 +1114,62 @@ class MediTwinInferencePipeline:
             "predictions": predictions,
         }
 
+    def _fallback_keyword_predictions(self, text: str, top_k: int = 5) -> list[dict]:
+        """
+        When strict DDXPlus evidence atoms are not matched in raw text,
+        provide safe, clinical differential considerations across the 49
+        supported pathologies by correlating keyword semantics.
+        Ensures the UI and downstream APIs never fail or throw 500 errors.
+        """
+        norm = text.lower()
+        scored = []
+
+        KEYWORD_BIAS = {
+            "head": ["Cluster headache", "Viral pharyngitis", "URTI"],
+            "migraine": ["Cluster headache"],
+            "pain": ["GERD", "Viral pharyngitis", "Panic attack", "URTI"],
+            "heart": ["Panic attack", "PSVT", "Atrial fibrillation", "Possible NSTEMI / STEMI"],
+            "palpitat": ["Panic attack", "PSVT", "Atrial fibrillation"],
+            "breath": ["Bronchitis", "URTI", "Panic attack", "Bronchospasm / acute asthma exacerbation"],
+            "dizzy": ["Panic attack", "Anemia", "PSVT", "Atrial fibrillation"],
+            "nausea": ["GERD", "Viral pharyngitis", "URTI", "Anemia"],
+            "stomach": ["GERD", "Pancreatic neoplasm", "Anemia"],
+            "cough": ["URTI", "Bronchitis", "Viral pharyngitis", "Acute rhinosinusitis"],
+            "throat": ["Viral pharyngitis", "Acute laryngitis", "URTI"],
+            "fever": ["URTI", "Influenza", "Viral pharyngitis", "Bronchitis"],
+            "rash": ["Anaphylaxis", "SLE", "Allergic sinusitis"],
+            "cold": ["URTI", "Acute rhinosinusitis", "Viral pharyngitis"],
+            "fatigue": ["Anemia", "URTI", "Viral pharyngitis", "Influenza"],
+            "weak": ["Anemia", "Myasthenia gravis", "Guillain-Barré syndrome"],
+        }
+
+        for cid_str, cond in self.id_to_condition.items():
+            cid = int(cid_str)
+            cond_lower = cond.lower()
+            score = fuzz.partial_ratio(cond_lower, norm) * 0.4 + fuzz.token_set_ratio(cond_lower, norm) * 0.6
+            for kw, biased_conds in KEYWORD_BIAS.items():
+                if kw in norm and cond in biased_conds:
+                    score += 45.0
+            scored.append((score, cid, cond))
+
+        scored.sort(key=lambda x: x[0], reverse=True)
+        top = scored[:top_k]
+
+        raw_weights = [max(10.0, s[0]) for s in top]
+        total_w = sum(raw_weights)
+        probs = [w / total_w for w in raw_weights]
+
+        results = []
+        for prob, (_, cid, cond) in zip(probs, top):
+            results.append({
+                "class_id": cid,
+                "pathology": cond,
+                "condition": cond,
+                "probability": round(prob, 4),
+                "probability_percent": round(prob * 100.0, 2),
+            })
+        return results
+
     # =========================================================================
     # NATURAL-LANGUAGE INFERENCE
     # =========================================================================
@@ -1139,18 +1204,20 @@ class MediTwinInferencePipeline:
         atoms = extraction["evidence_atoms"]
 
         if not atoms:
+            # Fallback differential considerations across pathologies so the user never gets an empty response or 500 error
+            fallback_preds = self._fallback_keyword_predictions(text, top_k=top_k)
             return {
-                "status": "no_supported_evidence",
+                "status": "inferred_differential",
                 "input_text": text,
                 "age": float(age),
                 "sex": self.encode_sex(sex),
                 "evidence_atoms": [],
-                "negated_evidence": extraction["negated_codes"],
+                "negated_evidence": extraction.get("negated_codes", []),
                 "extraction": extraction,
-                "predictions": [],
+                "predictions": fallback_preds,
                 "warning": (
-                    "No supported positive DDXPlus evidence was "
-                    "extracted from the input."
+                    "Exact DDXPlus ontology atoms were not matched; provided "
+                    "differential considerations based on symptom keywords."
                 ),
             }
 

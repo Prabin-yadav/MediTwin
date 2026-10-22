@@ -19,13 +19,23 @@ Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "  MediTwin - Starting Services" -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 
-Write-Host "`nFreeing ports 5000 and 5173..." -ForegroundColor Yellow
+Write-Host "`nFreeing ports 8002, 5002, 5000, and 5173..." -ForegroundColor Yellow
+Kill-Port 8002
+Kill-Port 5002
 Kill-Port 5000
 Kill-Port 5173
 Start-Sleep -Seconds 1
 
+# Module 2 Persistent AI Daemon
+Write-Host "`n[1/3] Starting Module 2 AI Engine on :8002 ..." -ForegroundColor Green
+$m2Dir = Join-Path $root "Module_2"
+$m2Script = "Set-Location '$m2Dir'; py -m uvicorn api:app --port 8002"
+Start-Process powershell -ArgumentList @("-NoExit", "-Command", $m2Script)
+
+Start-Sleep -Seconds 2
+
 # Backend (runs Node + orchestrates Python AI engines directly)
-Write-Host "`n[1/2] Starting backend on :5000 ..." -ForegroundColor Green
+Write-Host "[2/3] Starting backend on :5000 ..." -ForegroundColor Green
 $backendDir = Join-Path $root "backend"
 $backendScript = "Set-Location '$backendDir'; node server.js"
 Start-Process powershell -ArgumentList @("-NoExit", "-Command", $backendScript)
@@ -33,7 +43,7 @@ Start-Process powershell -ArgumentList @("-NoExit", "-Command", $backendScript)
 Start-Sleep -Seconds 2
 
 # Frontend
-Write-Host "[2/2] Starting frontend on :5173 ..." -ForegroundColor Green
+Write-Host "[3/3] Starting frontend on :5173 ..." -ForegroundColor Green
 $frontendDir = Join-Path $root "frontend"
 $frontendScript = "Set-Location '$frontendDir'; npm run dev"
 Start-Process powershell -ArgumentList @("-NoExit", "-Command", $frontendScript)
@@ -44,10 +54,11 @@ Write-Host ""
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "  All services started!" -ForegroundColor Green
 Write-Host ""
+Write-Host "  Module 2  ->  http://localhost:8002/health"
 Write-Host "  Backend   ->  http://localhost:5000/api/ping"
 Write-Host "  Frontend  ->  http://localhost:5173"
 Write-Host "  Theme     ->  Emerald (Primary)"
-Write-Host "  AI Engine ->  Integrated Direct Python Subprocess"
+Write-Host "  AI Engine ->  Dual Fast Daemon + Non-Blocking Async Worker"
 Write-Host "==========================================" -ForegroundColor Cyan
 
 Start-Sleep -Seconds 2

@@ -11,15 +11,19 @@ const module3Service = require("../services/module3Service");
 // ──────────────────────────────────────────────────────────────────────────────
 const predictDisease = async (req, res) => {
   try {
-    const { patientId } = req.user;
+    const patientId = req.user.patientId || req.user._id || req.user.id;
     const { inputText = "", symptoms = [], age, sex } = req.body;
+    const hasSymptoms = (Array.isArray(symptoms) && symptoms.length > 0);
+    const hasInputText = Boolean(inputText && inputText.trim());
 
-    if (!symptoms || symptoms.length === 0) {
-      return res.status(400).json({ message: "At least one symptom is required." });
+    if (!hasSymptoms && !hasInputText) {
+      return res.status(400).json({ message: "At least one symptom or description is required." });
     }
 
+    const effectiveSymptoms = hasSymptoms ? symptoms : [inputText.trim()];
+
     // 1. Call Module 2
-    const m2Result = await module2Service.predictDisease(symptoms, age, sex, inputText);
+    const m2Result = await module2Service.predictDisease(effectiveSymptoms, age, sex, inputText);
 
     // 2. Save to DB — including both the free-text input AND the structured list
     const doc = await SymptomAnalysis.create({

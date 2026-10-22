@@ -83,7 +83,7 @@ OBSERVATION_CONFIG = {
         "label": "Body weight",
         "unit": "kg",
         "direction_of_concern": "neutral",
-        "aliases": ["body weight", "weight"],
+        "aliases": ["body weight", "weight", "wt"],
         "plausibility_range": (1, 500),
         "min_absolute_change": 1.0,
     },
@@ -96,6 +96,9 @@ OBSERVATION_CONFIG = {
             "systolic blood pressure",
             "systolic bp",
             "sbp",
+            "systolic",
+            "bp systolic",
+            "blood pressure systolic",
         ],
         "plausibility_range": (40, 300),
         "min_absolute_change": 3.0,
@@ -109,6 +112,9 @@ OBSERVATION_CONFIG = {
             "diastolic blood pressure",
             "diastolic bp",
             "dbp",
+            "diastolic",
+            "bp diastolic",
+            "blood pressure diastolic",
         ],
         "plausibility_range": (20, 200),
         "min_absolute_change": 2.0,
@@ -118,7 +124,7 @@ OBSERVATION_CONFIG = {
         "label": "Heart rate",
         "unit": "bpm",
         "direction_of_concern": "neutral",
-        "aliases": ["heart rate", "pulse"],
+        "aliases": ["heart rate", "pulse", "hr", "pulse rate"],
         "plausibility_range": (20, 250),
         "min_absolute_change": 5.0,
     },
@@ -131,6 +137,7 @@ OBSERVATION_CONFIG = {
             "respiratory rate",
             "respiration rate",
             "breathing rate",
+            "rr",
         ],
         "plausibility_range": (4, 80),
         "min_absolute_change": 2.0,
@@ -149,6 +156,10 @@ OBSERVATION_CONFIG = {
             "high density lipoprotein cholesterol",
             "hdl cholesterol",
             "hdl",
+            "hdl-c",
+            "direct hdl",
+            "direct hdl cholesterol",
+            "hdl direct",
         ],
         "plausibility_range": (1, 200),
         "min_absolute_change": 3.0,
@@ -162,6 +173,10 @@ OBSERVATION_CONFIG = {
             "low density lipoprotein cholesterol",
             "ldl cholesterol",
             "ldl",
+            "ldl-c",
+            "calculated ldl",
+            "direct ldl",
+            "direct ldl cholesterol",
         ],
         "plausibility_range": (1, 500),
         "min_absolute_change": 5.0,
@@ -174,6 +189,10 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "triglycerides",
             "triglyceride",
+            "tg",
+            "tgl",
+            "serum triglycerides",
+            "s. triglycerides",
         ],
         "plausibility_range": (1, 2000),
         "min_absolute_change": 10.0,
@@ -186,6 +205,9 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "total cholesterol",
             "cholesterol total",
+            "serum cholesterol",
+            "cholesterol",
+            "s. cholesterol",
         ],
         "plausibility_range": (20, 1000),
         "min_absolute_change": 5.0,
@@ -204,6 +226,21 @@ OBSERVATION_CONFIG = {
             "glucose",
             "blood glucose",
             "serum glucose",
+            "blood sugar",
+            "fasting blood sugar",
+            "fbs",
+            "post prandial blood sugar",
+            "ppbs",
+            "random blood sugar",
+            "rbs",
+            "glucose (fasting)",
+            "glucose fasting",
+            "fasting plasma glucose",
+            "fpg",
+            "plasma glucose fasting",
+            "glucose random",
+            "blood sugar fasting",
+            "blood sugar pp",
         ],
         "plausibility_range": (20, 1000),
         "min_absolute_change": 5.0,
@@ -218,6 +255,10 @@ OBSERVATION_CONFIG = {
             "hba1c",
             "glycated hemoglobin",
             "hemoglobin a1c/hemoglobin.total in blood",
+            "glycohemoglobin",
+            "a1c",
+            "hba1c (glycated hemoglobin)",
+            "glycosylated hemoglobin",
         ],
         "plausibility_range": (2, 25),
         "min_absolute_change": 0.2,
@@ -235,6 +276,11 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "potassium",
             "serum potassium",
+            "k",
+            "k+",
+            "potassium (k+)",
+            "s. potassium",
+            "serum k",
         ],
         "plausibility_range": (1, 10),
         "min_absolute_change": 0.3,
@@ -247,6 +293,11 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "calcium",
             "serum calcium",
+            "ca",
+            "ca++",
+            "total calcium",
+            "s. calcium",
+            "serum ca",
         ],
         "plausibility_range": (3, 20),
         "min_absolute_change": 0.3,
@@ -259,6 +310,11 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "sodium",
             "serum sodium",
+            "na",
+            "na+",
+            "sodium (na+)",
+            "s. sodium",
+            "serum na",
         ],
         "plausibility_range": (100, 180),
         "min_absolute_change": 2.0,
@@ -272,6 +328,9 @@ OBSERVATION_CONFIG = {
             "carbon dioxide",
             "bicarbonate",
             "co2",
+            "bicarbonate (hco3)",
+            "hco3",
+            "serum bicarbonate",
         ],
         "plausibility_range": (5, 60),
         "min_absolute_change": 2.0,
@@ -284,6 +343,10 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "chloride",
             "serum chloride",
+            "cl",
+            "cl-",
+            "s. chloride",
+            "serum cl",
         ],
         "plausibility_range": (60, 150),
         "min_absolute_change": 2.0,
@@ -301,6 +364,12 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "creatinine",
             "serum creatinine",
+            "s. creatinine",
+            "s.creatinine",
+            "creat",
+            "cr",
+            "creatinine serum",
+            "blood creatinine",
         ],
         "plausibility_range": (0.1, 30),
         "min_absolute_change": 0.1,
@@ -314,6 +383,10 @@ OBSERVATION_CONFIG = {
             "urea nitrogen",
             "bun",
             "blood urea nitrogen",
+            "urea",
+            "blood urea",
+            "serum urea",
+            "s. urea",
         ],
         "plausibility_range": (1, 300),
         "min_absolute_change": 2.0,
@@ -328,6 +401,9 @@ OBSERVATION_CONFIG = {
             "egfr",
             "estimated glomerular filtration rate",
             "glomerular filtration rate/1.73 sq m.predicted",
+            "gfr",
+            "egfr (ckd-epi)",
+            "estimated gfr",
         ],
         "plausibility_range": (1, 250),
         "min_absolute_change": 3.0,
@@ -345,6 +421,12 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "ast",
             "aspartate aminotransferase",
+            "sgot",
+            "ast (sgot)",
+            "sgot/ast",
+            "aspartate transaminase",
+            "s.g.o.t.",
+            "sgot (ast)",
         ],
         "plausibility_range": (1, 5000),
         "min_absolute_change": 5.0,
@@ -357,6 +439,12 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "alt",
             "alanine aminotransferase",
+            "sgpt",
+            "alt (sgpt)",
+            "sgpt/alt",
+            "alanine transaminase",
+            "s.g.p.t.",
+            "sgpt (alt)",
         ],
         "plausibility_range": (1, 5000),
         "min_absolute_change": 5.0,
@@ -369,6 +457,9 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "alkaline phosphatase",
             "alp",
+            "alk phos",
+            "s. alkaline phosphatase",
+            "serum alkaline phosphatase",
         ],
         "plausibility_range": (1, 5000),
         "min_absolute_change": 10.0,
@@ -381,6 +472,12 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "total bilirubin",
             "bilirubin",
+            "bilirubin total",
+            "t. bilirubin",
+            "s. bilirubin",
+            "serum bilirubin total",
+            "serum bilirubin",
+            "bilirubin (total)",
         ],
         "plausibility_range": (0.01, 100),
         "min_absolute_change": 0.2,
@@ -393,6 +490,8 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "albumin",
             "serum albumin",
+            "s. albumin",
+            "alb",
         ],
         "plausibility_range": (0.5, 10),
         "min_absolute_change": 0.2,
@@ -402,7 +501,7 @@ OBSERVATION_CONFIG = {
     # ========================================================
     # CBC (4)
     #
-    # Only the core four are retained.
+    # Only the core four are retained for ML training.
     # ========================================================
 
     "Hemoglobin [Mass/volume] in Blood": {
@@ -412,6 +511,11 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "hemoglobin",
             "haemoglobin",
+            "hb",
+            "hgb",
+            "blood hemoglobin",
+            "hemoglobin (hb)",
+            "blood hb",
         ],
         "plausibility_range": (1, 25),
         "min_absolute_change": 0.5,
@@ -424,6 +528,9 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "hematocrit",
             "haematocrit",
+            "hct",
+            "pcv",
+            "packed cell volume",
         ],
         "plausibility_range": (5, 80),
         "min_absolute_change": 2.0,
@@ -437,6 +544,15 @@ OBSERVATION_CONFIG = {
             "leukocytes",
             "white blood cells",
             "wbc",
+            "wbc count",
+            "total wbc",
+            "total leukocyte count",
+            "total leukocytes",
+            "tlc",
+            "white blood cell count",
+            "leucocytes",
+            "total leucocyte count",
+            "white cells count",
         ],
         "plausibility_range": (0.1, 100),
         "min_absolute_change": 1.0,
@@ -449,9 +565,197 @@ OBSERVATION_CONFIG = {
         "aliases": [
             "platelets",
             "platelet count",
+            "platelet",
+            "total platelet count",
+            "plt",
+            "tpc",
+            "thrombocyte",
+            "thrombocytes",
+            "thrombocyte count",
         ],
         "plausibility_range": (1, 2000),
         "min_absolute_change": 20.0,
+    },
+}
+
+
+# ============================================================
+# EXTENDED CLINICAL OBSERVATIONS
+#
+# Broad spectrum laboratory and clinical tests supported for
+# patient dashboard display, longitudinal tracking, and OCR
+# extraction across all medical report formats.
+# ============================================================
+
+EXTENDED_OBSERVATIONS = {
+    # CBC Differentials
+    "Neutrophils": {
+        "label": "Neutrophils",
+        "unit": "%",
+        "aliases": ["neutrophils", "neutrophil", "neutrophil count", "polymorphs", "polymorphonuclear leukocytes", "segs", "segmented neutrophils", "neut"],
+        "plausibility_range": (0, 100),
+    },
+    "Lymphocytes": {
+        "label": "Lymphocytes",
+        "unit": "%",
+        "aliases": ["lymphocytes", "lymphocyte", "lymphocyte count", "lymph", "lymphs", "total lymphocytes"],
+        "plausibility_range": (0, 100),
+    },
+    "Monocytes": {
+        "label": "Monocytes",
+        "unit": "%",
+        "aliases": ["monocytes", "monocyte", "monocyte count", "mono", "monos"],
+        "plausibility_range": (0, 100),
+    },
+    "Eosinophils": {
+        "label": "Eosinophils",
+        "unit": "%",
+        "aliases": ["eosinophils", "eosinophil", "eosinophil count", "eos", "absolute eosinophil count", "aec"],
+        "plausibility_range": (0, 100),
+    },
+    "Basophils": {
+        "label": "Basophils",
+        "unit": "%",
+        "aliases": ["basophils", "basophil", "basophil count", "baso", "basos"],
+        "plausibility_range": (0, 100),
+    },
+    "Red Blood Cell Count": {
+        "label": "RBC Count",
+        "unit": "10⁶/µL",
+        "aliases": ["red blood cell count", "rbc count", "rbc", "total rbc", "red blood cells", "erythrocyte count", "total erythrocyte count"],
+        "plausibility_range": (0.5, 12.0),
+    },
+    "Mean Corpuscular Volume": {
+        "label": "MCV",
+        "unit": "fL",
+        "aliases": ["mean corpuscular volume", "mcv"],
+        "plausibility_range": (40, 150),
+    },
+    "Mean Corpuscular Hemoglobin": {
+        "label": "MCH",
+        "unit": "pg",
+        "aliases": ["mean corpuscular hemoglobin", "mch"],
+        "plausibility_range": (10, 60),
+    },
+    "Mean Corpuscular Hemoglobin Concentration": {
+        "label": "MCHC",
+        "unit": "g/dL",
+        "aliases": ["mean corpuscular hemoglobin concentration", "mchc"],
+        "plausibility_range": (15, 50),
+    },
+    "Red Cell Distribution Width": {
+        "label": "RDW",
+        "unit": "%",
+        "aliases": ["red cell distribution width", "rdw", "rdw-cv", "rdw-sd", "rdw cv", "rdw sd"],
+        "plausibility_range": (5, 40),
+    },
+    "Erythrocyte Sedimentation Rate": {
+        "label": "ESR",
+        "unit": "mm/hr",
+        "aliases": ["erythrocyte sedimentation rate", "esr", "esr westergren", "westergren esr", "sedimentation rate"],
+        "plausibility_range": (0, 150),
+    },
+
+    # Thyroid Function
+    "Thyroid Stimulating Hormone": {
+        "label": "TSH",
+        "unit": "µIU/mL",
+        "aliases": ["thyroid stimulating hormone", "tsh", "s. tsh", "serum tsh", "ultrasensitive tsh", "tsh - thyroid stimulating hormone"],
+        "plausibility_range": (0.01, 100),
+    },
+    "Triiodothyronine": {
+        "label": "Total T3",
+        "unit": "ng/dL",
+        "aliases": ["triiodothyronine", "total t3", "t3 total", "t3", "serum t3"],
+        "plausibility_range": (10, 800),
+    },
+    "Free Triiodothyronine": {
+        "label": "Free T3 (FT3)",
+        "unit": "pg/mL",
+        "aliases": ["free triiodothyronine", "free t3", "ft3"],
+        "plausibility_range": (0.5, 30),
+    },
+    "Thyroxine": {
+        "label": "Total T4",
+        "unit": "µg/dL",
+        "aliases": ["thyroxine", "total t4", "t4 total", "t4", "serum t4"],
+        "plausibility_range": (0.5, 30),
+    },
+    "Free Thyroxine": {
+        "label": "Free T4 (FT4)",
+        "unit": "ng/dL",
+        "aliases": ["free thyroxine", "free t4", "ft4"],
+        "plausibility_range": (0.1, 10),
+    },
+
+    # Vitamins & Minerals
+    "Vitamin D": {
+        "label": "Vitamin D (25-OH)",
+        "unit": "ng/mL",
+        "aliases": ["vitamin d", "25-hydroxy vitamin d", "25-oh vitamin d", "vit d", "vitamin d3", "25-oh vit d", "total 25-hydroxyvitamin d", "25-hydroxyvitamin d"],
+        "plausibility_range": (2, 200),
+    },
+    "Vitamin B12": {
+        "label": "Vitamin B12",
+        "unit": "pg/mL",
+        "aliases": ["vitamin b12", "vit b12", "cyanocobalamin", "b12", "serum b12"],
+        "plausibility_range": (20, 3000),
+    },
+    "Serum Iron": {
+        "label": "Serum Iron",
+        "unit": "µg/dL",
+        "aliases": ["serum iron", "iron", "fe"],
+        "plausibility_range": (5, 500),
+    },
+    "Ferritin": {
+        "label": "Serum Ferritin",
+        "unit": "ng/mL",
+        "aliases": ["ferritin", "serum ferritin", "s. ferritin"],
+        "plausibility_range": (1, 5000),
+    },
+
+    # Renal & Liver Extended
+    "Uric Acid": {
+        "label": "Uric Acid",
+        "unit": "mg/dL",
+        "aliases": ["uric acid", "serum uric acid", "s. uric acid"],
+        "plausibility_range": (0.5, 25),
+    },
+    "Total Protein": {
+        "label": "Total Protein",
+        "unit": "g/dL",
+        "aliases": ["total protein", "serum total protein", "protein total", "s. protein"],
+        "plausibility_range": (2.0, 15.0),
+    },
+    "Globulin": {
+        "label": "Serum Globulin",
+        "unit": "g/dL",
+        "aliases": ["globulin", "serum globulin", "s. globulin"],
+        "plausibility_range": (0.5, 10.0),
+    },
+    "Albumin Globulin Ratio": {
+        "label": "A/G Ratio",
+        "unit": "ratio",
+        "aliases": ["albumin globulin ratio", "a/g ratio", "ag ratio", "albumin / globulin ratio"],
+        "plausibility_range": (0.1, 5.0),
+    },
+    "Bilirubin Direct": {
+        "label": "Direct Bilirubin",
+        "unit": "mg/dL",
+        "aliases": ["direct bilirubin", "conjugated bilirubin", "bilirubin direct", "d. bilirubin"],
+        "plausibility_range": (0.01, 30.0),
+    },
+    "Bilirubin Indirect": {
+        "label": "Indirect Bilirubin",
+        "unit": "mg/dL",
+        "aliases": ["indirect bilirubin", "unconjugated bilirubin", "bilirubin indirect"],
+        "plausibility_range": (0.01, 30.0),
+    },
+    "Gamma Glutamyl Transferase": {
+        "label": "GGT",
+        "unit": "U/L",
+        "aliases": ["gamma glutamyl transferase", "ggt", "ggtp", "gamma gt"],
+        "plausibility_range": (1, 2000),
     },
 }
 
@@ -473,11 +777,17 @@ if len(SUPPORTED_OBSERVATIONS) != 29:
 OBSERVATION_ALIASES = {}
 
 for canonical_name, info in OBSERVATION_CONFIG.items():
-
     OBSERVATION_ALIASES[canonical_name.lower()] = canonical_name
-
     for alias in info["aliases"]:
         OBSERVATION_ALIASES[alias.lower()] = canonical_name
+
+# Extended observation aliases mapping
+EXTENDED_ALIASES = {}
+for ext_name, info in EXTENDED_OBSERVATIONS.items():
+    EXTENDED_ALIASES[ext_name.lower()] = ext_name
+    for alias in info["aliases"]:
+        EXTENDED_ALIASES[alias.lower()] = ext_name
+
 
 
 # ============================================================
