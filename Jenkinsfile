@@ -5,7 +5,6 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '15'))
         timeout(time: 1, unit: 'HOURS')
         disableConcurrentBuilds()
-        ansiColor('xterm')
         timestamps()
     }
 
@@ -219,10 +218,7 @@ pipeline {
         // ============================================================
         stage('Deploy Application') {
             when {
-                allOf {
-                    expression { return IS_RELEASE_BRANCH }
-                    not { params.DEPLOY_TARGET == 'none' }
-                }
+                expression { return IS_RELEASE_BRANCH && params.DEPLOY_TARGET != 'none' }
             }
             stages {
 
@@ -231,7 +227,7 @@ pipeline {
                 // ----------------------------------------------------
                 stage('Kubernetes Deploy') {
                     when {
-                        params.DEPLOY_TARGET == 'kubernetes'
+                        expression { return params.DEPLOY_TARGET == 'kubernetes' }
                     }
                     steps {
                         script {
@@ -271,7 +267,7 @@ pipeline {
                 // ----------------------------------------------------
                 stage('Docker Compose Deploy') {
                     when {
-                        params.DEPLOY_TARGET == 'docker-compose'
+                        expression { return params.DEPLOY_TARGET == 'docker-compose' }
                     }
                     steps {
                         echo "===> Deploying with Docker Compose..."
@@ -288,7 +284,7 @@ pipeline {
                 // ----------------------------------------------------
                 stage('Ansible Provision & Deploy') {
                     when {
-                        params.DEPLOY_TARGET == 'ansible'
+                        expression { return params.DEPLOY_TARGET == 'ansible' }
                     }
                     steps {
                         echo "===> Running Ansible Playbook..."
