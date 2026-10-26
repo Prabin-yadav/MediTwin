@@ -22,7 +22,7 @@ pipeline {
     }
 
     environment {
-        // Jenkins Credentials IDs (configure these in Manage Jenkins -> Credentials)
+        // Jenkins Credentials IDs (configure in Manage Jenkins -> Credentials)
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
         KUBECONFIG_CREDENTIAL_ID = 'k8s-kubeconfig'
         GOOGLE_CLIENT_CRED_ID    = 'vite-google-client-id'
@@ -30,11 +30,6 @@ pipeline {
         // Docker Image names
         DOCKER_IMAGE_FRONTEND    = 'meditwin-frontend'
         DOCKER_IMAGE_BACKEND     = 'meditwin-backend'
-
-        // Dynamic properties populated during initialization
-        SHORT_SHA                = ''
-        BRANCH_CLEAN             = ''
-        IS_RELEASE_BRANCH        = false
     }
 
     stages {
@@ -45,28 +40,39 @@ pipeline {
         stage('Initialize Pipeline') {
             steps {
                 script {
-                    SHORT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                    env.SHORT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                     def rawBranch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: 'local'
-                    BRANCH_CLEAN = rawBranch.replaceFirst('^origin/', '').replaceAll('/', '-')
+                    env.BRANCH_CLEAN = rawBranch.replaceFirst('^origin/', '').replaceAll('/', '-')
 
-                    IS_RELEASE_BRANCH = (BRANCH_CLEAN == 'main' || BRANCH_CLEAN == 'devops-deployment' || params.FORCE_DOCKER_PUSH)
+                    def isRelease = (env.BRANCH_CLEAN == 'main' || env.BRANCH_CLEAN == 'devops-deployment' || params.FORCE_DOCKER_PUSH.toString().toBoolean())
+                    env.IS_RELEASE_BRANCH = isRelease.toString()
 
                     echo """
                     ====================================================
                     MediTwin CI/CD Pipeline
                     ====================================================
-                    Branch:         ${BRANCH_CLEAN}
-                    Commit SHA:     ${SHORT_SHA}
-                    Release Branch: ${IS_RELEASE_BRANCH}
+                    Branch:         ${env.BRANCH_CLEAN}
+                    Commit SHA:     ${env.SHORT_SHA}
+                    Release Branch: ${env.IS_RELEASE_BRANCH}
                     Deploy Target:  ${params.DEPLOY_TARGET}
                     ====================================================
                     """
+
+                    sh '''
+                        echo "===> Checking Agent Environment Tools:"
+                        echo -n "Node.js: " && (command -v node || echo "not found")
+                        echo -n "npm:     " && (command -v npm || echo "not found")
+                        echo -n "Python3: " && (command -v python3 || echo "not found")
+                        echo -n "Docker:  " && (command -v docker || echo "not found")
+                        echo -n "kubectl: " && (command -v kubectl || echo "not found")
+                    '''
                 }
             }
         }
 
         // ============================================================
         // STAGE 2 — Validation (Frontend, Backend, AI Modules)
+        // Supports both host runtime and containerized fallback
         // ============================================================
         stage('Validate Application') {
             parallel {
@@ -76,16 +82,32 @@ pipeline {
                 // ----------------------------------------------------
                 stage('Validate Frontend') {
                     steps {
-                        dir('frontend') {
-                            echo "===> Installing frontend dependencies and verifying production build..."
-                            sh '''
-                                if [ -f package-lock.json ]; then
-                                    npm ci
+                        script {
+                            def googleClientId = ""
+                            try {
+                                withCredentials([string(credentialsId: env.GOOGLE_CLIENT_CRED_ID, variable: 'CLIENT_ID')]) {
+                                    googleClientId = CLIENT_ID
+                                }
+                            } catch (Exception e) {}
+
+                            sh """
+                                if command -v npm >/dev/null 2>&1; then
+                                    echo "===> Validating Frontend using host Node.js / npm..."
+                                    cd frontend
+                                    if [ -f package-lock.json ]; then npm ci; else npm install; fi
+                                    npm run build
+                                elif command -v docker >/dev/null 2>&1; then
+                                    echo "===> 'npm' not found on agent. Validating Frontend build via Docker (node:22-bookworm-slim)..."
+                                    docker build --target build \
+                                        -f ./frontend/Dockerfile \
+                                        --build-arg VITE_GOOGLE_CLIENT_ID="${googleClientId}" \
+                                        .
                                 else
-                                    npm install
+                                    echo "===> ERROR: Neither 'npm' nor 'docker' is available on this Jenkins agent."
+                                    echo "Please install Node.js/npm or Docker on your Jenkins agent to validate the frontend."
+                                    exit 1
                                 fi
-                                npm run build
-                            '''
+                            """
                         }
                     }
                 }
@@ -95,17 +117,26 @@ pipeline {
                 // ----------------------------------------------------
                 stage('Validate Backend') {
                     steps {
-                        dir('backend') {
-                            echo "===> Installing backend dependencies and validating JavaScript syntax..."
-                            sh '''
-                                if [ -f package-lock.json ]; then
-                                    npm ci
-                                else
-                                    npm install
-                                fi
+                        sh '''
+                            if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
+                                echo "===> Validating Backend using host Node.js / npm..."
+                                cd backend
+                                if [ -f package-lock.json ]; then npm ci; else npm install; fi
                                 node --check server.js
-                            '''
-                        }
+                            elif command -v docker >/dev/null 2>&1; then
+                                echo "===> 'node/npm' not found on agent. Validating Backend syntax via Docker (node:22-bookworm-slim)..."
+                                tar -cf - backend | docker run --rm -i node:22-bookworm-slim sh -c "
+                                    tar -xf -
+                                    cd backend
+                                    if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
+                                    node --check server.js
+                                "
+                            else
+                                echo "===> ERROR: Neither 'node/npm' nor 'docker' is available on this Jenkins agent."
+                                echo "Please install Node.js/npm or Docker on your Jenkins agent to validate the backend."
+                                exit 1
+                            fi
+                        '''
                     }
                 }
 
@@ -114,11 +145,25 @@ pipeline {
                 // ----------------------------------------------------
                 stage('Validate Python AI Modules') {
                     steps {
-                        echo "===> Checking Python syntax for AI Modules (Module 1, 2, 3)..."
                         sh '''
-                            python3 -m compileall -q Module_1
-                            python3 -m compileall -q Module_2
-                            python3 -m compileall -q Module_3
+                            if command -v python3 >/dev/null 2>&1; then
+                                echo "===> Validating Python AI Modules using host python3..."
+                                python3 -m compileall -q Module_1
+                                python3 -m compileall -q Module_2
+                                python3 -m compileall -q Module_3
+                            elif command -v docker >/dev/null 2>&1; then
+                                echo "===> 'python3' not found on agent. Validating AI Modules via Docker (python:3.11-slim)..."
+                                tar -cf - Module_1 Module_2 Module_3 | docker run --rm -i python:3.11-slim sh -c "
+                                    tar -xf -
+                                    python3 -m compileall -q Module_1
+                                    python3 -m compileall -q Module_2
+                                    python3 -m compileall -q Module_3
+                                "
+                            else
+                                echo "===> ERROR: Neither 'python3' nor 'docker' is available on this Jenkins agent."
+                                echo "Please install python3 or Docker on your Jenkins agent to validate AI modules."
+                                exit 1
+                            fi
                         '''
                     }
                 }
@@ -130,11 +175,10 @@ pipeline {
         // ============================================================
         stage('Docker Build & Push') {
             when {
-                expression { return IS_RELEASE_BRANCH }
+                expression { return env.IS_RELEASE_BRANCH == 'true' }
             }
             steps {
                 script {
-                    // Attempt to fetch optional VITE_GOOGLE_CLIENT_ID secret if present
                     def googleClientId = ""
                     try {
                         withCredentials([string(credentialsId: env.GOOGLE_CLIENT_CRED_ID, variable: 'CLIENT_ID')]) {
@@ -156,12 +200,12 @@ pipeline {
                         def backendRepo  = "${DOCKER_USER}/${env.DOCKER_IMAGE_BACKEND}"
 
                         // Generate tag variants mirroring GitHub Actions
-                        def feShaTag    = "${frontendRepo}:sha-${SHORT_SHA}"
-                        def feBranchTag = "${frontendRepo}:${BRANCH_CLEAN}"
+                        def feShaTag    = "${frontendRepo}:sha-${env.SHORT_SHA}"
+                        def feBranchTag = "${frontendRepo}:${env.BRANCH_CLEAN}"
                         def feLatestTag = "${frontendRepo}:latest"
 
-                        def beShaTag    = "${backendRepo}:sha-${SHORT_SHA}"
-                        def beBranchTag = "${backendRepo}:${BRANCH_CLEAN}"
+                        def beShaTag    = "${backendRepo}:sha-${env.SHORT_SHA}"
+                        def beBranchTag = "${backendRepo}:${env.BRANCH_CLEAN}"
                         def beLatestTag = "${backendRepo}:latest"
 
                         // --------------------------------------------
@@ -175,7 +219,7 @@ pipeline {
                                 --build-arg VITE_GOOGLE_CLIENT_ID="${googleClientId}" \
                                 -t ${feShaTag} \
                                 -t ${feBranchTag} \
-                                ${BRANCH_CLEAN == 'main' ? "-t ${feLatestTag}" : ""} \
+                                ${env.BRANCH_CLEAN == 'main' ? "-t ${feLatestTag}" : ""} \
                                 .
                         """
                         sh feBuildCmd
@@ -183,7 +227,7 @@ pipeline {
                         echo "===> Pushing Frontend Docker Image..."
                         sh "docker push ${feShaTag}"
                         sh "docker push ${feBranchTag}"
-                        if (BRANCH_CLEAN == 'main') {
+                        if (env.BRANCH_CLEAN == 'main') {
                             sh "docker push ${feLatestTag}"
                         }
 
@@ -197,7 +241,7 @@ pipeline {
                                 -f ./backend/Dockerfile \
                                 -t ${beShaTag} \
                                 -t ${beBranchTag} \
-                                ${BRANCH_CLEAN == 'main' ? "-t ${beLatestTag}" : ""} \
+                                ${env.BRANCH_CLEAN == 'main' ? "-t ${beLatestTag}" : ""} \
                                 .
                         """
                         sh beBuildCmd
@@ -205,7 +249,7 @@ pipeline {
                         echo "===> Pushing Backend Docker Image..."
                         sh "docker push ${beShaTag}"
                         sh "docker push ${beBranchTag}"
-                        if (BRANCH_CLEAN == 'main') {
+                        if (env.BRANCH_CLEAN == 'main') {
                             sh "docker push ${beLatestTag}"
                         }
                     }
@@ -218,7 +262,7 @@ pipeline {
         // ============================================================
         stage('Deploy Application') {
             when {
-                expression { return IS_RELEASE_BRANCH && params.DEPLOY_TARGET != 'none' }
+                expression { return env.IS_RELEASE_BRANCH == 'true' && params.DEPLOY_TARGET != 'none' }
             }
             stages {
 
